@@ -12,6 +12,7 @@ export default function Edit() {
 				const response = await fetch(`/wp-json/wp/v2/review?slug=${postName}`);
 				const data = await response.json();
 				if (data.length > 0) {
+					console.log(data);
 					setPost(data[0]);
 				} else {
 					setPost(null);
