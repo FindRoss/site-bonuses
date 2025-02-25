@@ -36,7 +36,7 @@ export default function Edit({ attributes, setAttributes }) {
 			};
 			fetchBonuses();
 		}
-	}, [bonusType]); // Runs whenever bonusType changes
+	}, [bonusType]);
 
 
 	useEffect(() => {
