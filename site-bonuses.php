@@ -47,40 +47,42 @@ function get_bonuses_by_type( $data ) {
 	$args = array(
 		'post_type' => 'bonus',
 		'posts_per_page' => 4, 
+		'meta_query' => array(
+			'relation' => 'AND',
+			array(
+				'key'     => 'bonus_expired',
+				'value'   => '1',
+				'compare' => '!='
+			),
+			array(
+				'relation' => 'OR', 
+				array(
+					'key'     => 'expiry_date', 
+					'value'   => current_time('mysql'),
+					'compare' => '>',
+					'type'    => 'DATETIME',
+				),
+				array(
+					'key'     => 'expiry_date',
+					'value'   => '',   
+					'compare' => '='
+				),
+			),
+		),
 	);
+	
 
-	// 'meta_query' => array(
-	// 		'relation' => 'AND',
-	// 		array(
-	// 			'key'     => 'bonus_expired',
-	// 			'value'   => '1',
-	// 			'compare' => '!='
-	// 		),
-	// 		array(
-	// 			'relation' => 'OR', 
-	// 			array(
-	// 				'key'     => 'expiry_date', 
-	// 				'value'   => current_time('mysql'), // Current date and time in 'Y-m-d H:i:s' format
-	// 				'compare' => '>',
-	// 				'type'    => 'DATETIME', // Ensure it's stored in 'Y-m-d H:i:s'
-	// 			),
-	// 			array(
-	// 				'key'     => 'expiry_date',
-	// 				'value'   => '',   // Empty value for no expiry date
-	// 				'compare' => '='
-	// 			),
-	// 		),
-	// 	);
+	
 
-	// if ( $bonus_type ) {
-	// 	$args['tax_query'] = array(
-	// 		array(
-	// 			'taxonomy' => 'bonus_type',
-	// 			'field'    => 'slug',
-	// 			'terms' 	=> $bonus_type,
-	// 		),
-	// 	);
-	// }
+	if ( $bonus_type ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'bonus_type',
+				'field'    => 'slug',
+				'terms' 	 => $bonus_type,
+			),
+		);
+	}
 
 	// Query bonuses
 	$bonuses_query = new WP_Query( $args );
