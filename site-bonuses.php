@@ -46,18 +46,41 @@ function get_bonuses_by_type( $data ) {
 	// Example: Querying custom post type or fetching related ACF fields
 	$args = array(
 		'post_type' => 'bonus',
-		'posts_per_page' => 4, // No limit, adjust as necessary
+		'posts_per_page' => 4, 
 	);
 
-	if ( $bonus_type ) {
-		$args['meta_query'] = array(
-			array(
-				'key'     => 'bonus_type', // Assume the ACF field name for bonus type
-				'value'   => $bonus_type,
-				'compare' => '='
-			),
-		);
-	}
+	// 'meta_query' => array(
+	// 		'relation' => 'AND',
+	// 		array(
+	// 			'key'     => 'bonus_expired',
+	// 			'value'   => '1',
+	// 			'compare' => '!='
+	// 		),
+	// 		array(
+	// 			'relation' => 'OR', 
+	// 			array(
+	// 				'key'     => 'expiry_date', 
+	// 				'value'   => current_time('mysql'), // Current date and time in 'Y-m-d H:i:s' format
+	// 				'compare' => '>',
+	// 				'type'    => 'DATETIME', // Ensure it's stored in 'Y-m-d H:i:s'
+	// 			),
+	// 			array(
+	// 				'key'     => 'expiry_date',
+	// 				'value'   => '',   // Empty value for no expiry date
+	// 				'compare' => '='
+	// 			),
+	// 		),
+	// 	);
+
+	// if ( $bonus_type ) {
+	// 	$args['tax_query'] = array(
+	// 		array(
+	// 			'taxonomy' => 'bonus_type',
+	// 			'field'    => 'slug',
+	// 			'terms' 	=> $bonus_type,
+	// 		),
+	// 	);
+	// }
 
 	// Query bonuses
 	$bonuses_query = new WP_Query( $args );
@@ -67,15 +90,37 @@ function get_bonuses_by_type( $data ) {
 		while ( $bonuses_query->have_posts() ) : $bonuses_query->the_post();
 
 			$id = get_the_ID(); 
-			$site = get_field('single_bonus_casino'); 
-			$site_link = get_field('details_group', $site); 
+			$bonus_link   = get_field('bonus_link', $id);
+			$code        = get_field('code', $id);
+			$exclusive   = get_field('exclusive', $id);
+			$expiry_date = get_field('expiry_date', $id);
+  		$marked_expired = get_field('bonus_expired', $id); 
+			
+			$site = get_field('single_bonus_casino', $id)[0]; 
+			
+			$details_group = get_field('details_group', $site); 
+			$site_name = $details_group['name'];
+			$site_link = $details_group['affiliate_link'];
+			
+			$media_group = get_field('media_group', $site);
+  		$site_color = $media_group['theme_color'];
 
+			$site_color_output = $site_color ? $site_color : '#eeeeee';
+			$output_link = $bonus_link ? $bonus_link : $site_link;
 			
 			$data = array(
-				'title'   => get_the_title(),
-				'bonus_link' => $site_link, 
+				'title'          => get_the_title(),
+				'permalink'      => get_the_permalink(),
+				'site_name'      => $site_name,
+				'link'           => $output_link,
+				'code'           => $code ? $code : false,
+				'exclusive'      => $exclusive ? true : false,
+				'expiry_date'    => $expiry_date ? $expiry_date : false,
+				'marked_expired' => $marked_expired ? true : false,
 			);
+
 			$bonuses[] = $data;
+
 		endwhile;
 		wp_reset_postdata();
 	endif;
