@@ -21,5 +21,5 @@
  */
 
 /* eslint-disable no-console */
-console.log( 'Hello World! (from create-block-site-bonuses block)' );
+// console.log( 'Hello World! (from create-block-site-bonuses block)' );
 /* eslint-enable no-console */

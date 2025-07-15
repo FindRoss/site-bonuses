@@ -6,13 +6,13 @@
 	"title": "Site Bonuses",
 	"category": "widgets",
 	"icon": "smiley",
-	"description": "Example block scaffolded with Create Block tool.",
+	"description": "A custom block build with @wordpress/scripts to display bonuses",
 	"example": {},
 	"supports": {
 		"html": false
 	},
 	"attributes": {
-		"bonusType": {
+		"bonusSite": {
 			"type": "string",
 			"default": ""
 		}

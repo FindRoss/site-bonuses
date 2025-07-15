@@ -1,6 +1,6 @@
 
 const BonusCard = ({ bonus }) => {
-  console.log('bonus, bonus, bonus: ', bonus);
+  // console.log('bonus, bonus, bonus: ', bonus);
 
   return (
     <div className="bonus-card">
